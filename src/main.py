@@ -6,11 +6,40 @@ import wave
 
 import numpy as np
 from fastapi import FastAPI, File, Form, HTTPException, UploadFile
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from openai import OpenAI
 from pypinyin import Style, pinyin
 
 app = FastAPI(title="Chinese Transcription API")
+
+DEFAULT_CORS_ORIGINS = [
+    "http://localhost",
+    "http://localhost:3000",
+    "http://127.0.0.1",
+    "http://127.0.0.1:3000",
+    "http://localhost:8081",
+    "http://localhost:19006",
+    "http://127.0.0.1:8081",
+    "http://127.0.0.1:19006",
+
+]
+
+cors_origins_env = os.getenv("CORS_ALLOW_ORIGINS")
+cors_origins = (
+    [origin.strip() for origin in cors_origins_env.split(",") if origin.strip()]
+    if cors_origins_env
+    else DEFAULT_CORS_ORIGINS
+)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=cors_origins,
+    allow_origin_regex=r"^https?://192\.168\.\d{1,3}\.\d{1,3}(:\d+)?$",
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 def trim_silence(raw_bytes: bytes, threshold: float = 0.02) -> bytes:
