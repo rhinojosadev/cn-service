@@ -1,6 +1,6 @@
-fastapi
-uvicorn
-openai
-numpy
-pypinyin
-python-multipart
+fastapi==0.129.0
+numpy==2.4.2
+openai==2.21.0
+pypinyin==0.55.0
+python-multipart==0.0.22
+uvicorn==0.40.0
